@@ -156,6 +156,7 @@
                                                 <constraint firstItem="JbG-kA-Sp3" firstAttribute="centerY" secondItem="AGf-Fr-VVz" secondAttribute="centerY" id="sE8-Q2-uOc"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" red="0.85689641497461932" green="0.83450290622965062" blue="0.72934822099466123" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         <connections>
                                             <outlet property="highTempLabel" destination="xJA-Iz-STX" id="TMs-XK-ut5"/>

@@ -25,7 +25,7 @@ class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        tableView.dataSource = self.forecasts as? UITableViewDataSource
+        tableView.dataSource = self
         tableView.delegate = self
         
         currentWeather = CurrentWeather()
@@ -34,6 +34,7 @@ class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         currentWeather.downloadWeatherDetails {
             self.downloadForecastData {
+                
                 self.updateMainUI()
             }
         }
@@ -52,6 +53,8 @@ class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewD
                         let forecast = Forecast(weatherDict: item)
                         self.forecasts.append(forecast)
                     }
+                    self.forecasts.remove(at: 0)
+                    self.tableView.reloadData()
                 }
             }
         }
@@ -63,12 +66,17 @@ class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return forecasts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "weatherViewCell", for: indexPath)
-        return cell
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "weatherViewCell", for: indexPath) as? WeatherViewCell {
+            let forecast = forecasts[indexPath.row]
+            cell.configureCell(forecast: forecast)
+            return cell
+        } else {
+            return WeatherViewCell()
+        }
     }
     
     func updateMainUI() {

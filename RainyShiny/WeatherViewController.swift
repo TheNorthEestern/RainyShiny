@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -17,13 +18,43 @@ class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewD
     @IBOutlet weak var currentWeatherLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
+    var currentWeather: CurrentWeather!
+    var forecast: Forecast!
+    var forecasts: [Forecast]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         tableView.dataSource = self
         tableView.delegate = self
         
+        currentWeather = CurrentWeather()
+        forecast = Forecast()
+        
+        
+        currentWeather.downloadWeatherDetails {
+            // Setup UI to load dowloaded data
+            self.updateMainUI()
+        }
+        
         print(CURRENT_WEATHER_URL)
+    }
+    
+    func downloadForecastData(completed: DownloadComplete) {
+        // Will download forecast weather data for table view
+        let forecastUrl = URL(string: FORECAST_URL)
+        Alamofire.request(FORECAST_URL).responseJSON {
+            response in
+            let result = response.result
+            if let dict = result.value as? Dictionary<String, AnyObject> {
+                if let list = dict["list"] as? [Dictionary<String, AnyObject>] {
+                    for item in list {
+                        let forecast = Forecast(weatherDict: item)
+                        forecasts.append(forecast)
+                    }
+                }
+            }
+        }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -37,6 +68,15 @@ class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "weatherViewCell", for: indexPath)
         return cell
+    }
+    
+    func updateMainUI() {
+        dateLabel.text = currentWeather.date
+        temperatureLabel.text = "\(currentWeather.currentTemp)"
+        currentWeatherLabel.text = currentWeather.weatherType
+        print ("KACY \(currentWeather.cityName)")
+        locationLabel.text = currentWeather.cityName
+        currentWeatherImage.image = UIImage(named: currentWeather.weatherType)
     }
     
 }

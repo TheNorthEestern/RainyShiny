@@ -74,11 +74,8 @@ class CurrentWeather {
                     
                     if let currentTemperature = main["temp"] as? Double {
                         
-                        let kelvinToFahrenheitPredivision = (currentTemperature * (9/5) - 459.67)
+                        self._currentTemp = ConversionHelpers.KelvinToFahrenheit(temperature: currentTemperature)
                         
-                        let kelvinToFahrenheit = Double(round(10 * kelvinToFahrenheitPredivision/10))
-                        
-                        self._currentTemp = kelvinToFahrenheit
                         print(self._currentTemp)
                     }
                 }

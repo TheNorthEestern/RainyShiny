@@ -9,8 +9,8 @@
 import UIKit
 
 class ConversionHelpers {
-    static func KelvinToFahrenheit (currentTemperature: Double) -> Double {
-        let kelvinToFahrenheitPredivision = (currentTemperature * (9/5) - 459.67)
+    static func KelvinToFahrenheit (temperature: Double) -> Double {
+        let kelvinToFahrenheitPredivision = (temperature * (9/5) - 459.67)
         let kelvinToFahrenheit = Double(round(10 * kelvinToFahrenheitPredivision/10))
         
         return kelvinToFahrenheit

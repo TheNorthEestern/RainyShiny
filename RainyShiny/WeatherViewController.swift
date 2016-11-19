@@ -20,21 +20,22 @@ class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var currentWeather: CurrentWeather!
     var forecast: Forecast!
-    var forecasts: [Forecast]()
+    var forecasts = [Forecast]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        tableView.dataSource = self
+        tableView.dataSource = self.forecasts as? UITableViewDataSource
         tableView.delegate = self
         
         currentWeather = CurrentWeather()
-        forecast = Forecast()
+        // forecast = Forecast()
         
         
         currentWeather.downloadWeatherDetails {
-            // Setup UI to load dowloaded data
-            self.updateMainUI()
+            self.downloadForecastData {
+                self.updateMainUI()
+            }
         }
         
         print(CURRENT_WEATHER_URL)
@@ -42,7 +43,6 @@ class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func downloadForecastData(completed: DownloadComplete) {
         // Will download forecast weather data for table view
-        let forecastUrl = URL(string: FORECAST_URL)
         Alamofire.request(FORECAST_URL).responseJSON {
             response in
             let result = response.result
@@ -50,11 +50,12 @@ class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewD
                 if let list = dict["list"] as? [Dictionary<String, AnyObject>] {
                     for item in list {
                         let forecast = Forecast(weatherDict: item)
-                        forecasts.append(forecast)
+                        self.forecasts.append(forecast)
                     }
                 }
             }
         }
+        completed()
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {

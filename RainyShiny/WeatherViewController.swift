@@ -32,20 +32,32 @@ class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewD
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
+        locationManager.startMonitoringSignificantLocationChanges()
         
         tableView.dataSource = self
         tableView.delegate = self
         currentWeather = CurrentWeather()
-        // forecast = Forecast()
-        
-        
-        currentWeather.downloadWeatherDetails {
-            self.downloadForecastData {
-                self.updateMainUI()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        locationAuthStatus()
+    }
+    
+    func locationAuthStatus () {
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
+            currentLocation = locationManager.location
+            Location.sharedInstance.longitude = currentLocation.coordinate.longitude
+            Location.sharedInstance.latitude = currentLocation.coordinate.latitude
+            currentWeather.downloadWeatherDetails {
+                self.downloadForecastData {
+                    self.updateMainUI()
+                }
             }
+        } else {
+            locationManager.requestWhenInUseAuthorization()
+            locationAuthStatus()
         }
-        
-        print(CURRENT_WEATHER_URL)
     }
     
     func downloadForecastData(completed: DownloadComplete) {

@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 import Alamofire
 
-class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate {
 
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var temperatureLabel: UILabel!

@@ -20,6 +20,7 @@ class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewD
     @IBOutlet weak var tableView: UITableView!
     
     let locationManager = CLLocationManager()
+    var currentLocation: CLLocation!
     
     var currentWeather: CurrentWeather!
     var forecast: Forecast!
@@ -27,7 +28,11 @@ class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        
         tableView.dataSource = self
         tableView.delegate = self
         currentWeather = CurrentWeather()
@@ -36,7 +41,6 @@ class WeatherViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         currentWeather.downloadWeatherDetails {
             self.downloadForecastData {
-                
                 self.updateMainUI()
             }
         }
